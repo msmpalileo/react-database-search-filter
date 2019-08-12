@@ -1,55 +1,17 @@
+const graphql = require("graphql");
+const _ = require("lodash");
+const User = require("./models/user");
+const Profile = require("./models/profile");
+
 const {
   GraphQLObjectType,
   GraphQLString,
   GraphQLSchema,
   GraphQLID,
   GraphQLInt,
-  GraphQLList
+  GraphQLList,
+  GraphQLNonNull
 } = require("graphql");
-
-const _ = require("lodash");
-
-//Dummy Data
-let users = [
-  { firstName: "Miguel", lastName: "Palileo", id: "1" },
-  { firstName: "Joyce", lastName: "Mondejar", id: "2" },
-  { firstName: "Renz", lastName: "Diansay", id: "3" }
-];
-
-let profiles = [
-  {
-    id: "1",
-    street: "505 South Market St",
-    city: "San Jose",
-    state: "CA",
-    zip: "95008",
-    rent: 3500
-  },
-  {
-    id: "1",
-    street: "Oriental St",
-    city: "Davao City",
-    state: "Davao del Sur",
-    zip: "8000",
-    rent: 2500
-  },
-  {
-    id: "2",
-    street: "13th Street, Puan",
-    city: "Davao City",
-    state: "Davao del Sur",
-    zip: "8000",
-    rent: 1500
-  },
-  {
-    id: "3",
-    street: "Mango St., Dona Pilar",
-    city: "Davao City",
-    state: "Davao del Sur",
-    zip: "8000",
-    rent: 4000
-  }
-];
 
 //Users
 const UserType = new GraphQLObjectType({
@@ -61,7 +23,8 @@ const UserType = new GraphQLObjectType({
     profiles: {
       type: new GraphQLList(ProfileType),
       resolve(parent, args) {
-        return _.filter(profiles, { id: parent.id });
+        // return _.filter(profiles, { id: parent.id });
+        return Profile.find({ userID: parent.id });
       }
     }
   })
@@ -76,7 +39,8 @@ const ProfileType = new GraphQLObjectType({
     city: { type: GraphQLString },
     state: { type: GraphQLString },
     zip: { type: GraphQLString },
-    rent: { type: GraphQLInt }
+    rent: { type: GraphQLInt },
+    userID: { type: GraphQLString }
   })
 });
 
@@ -88,25 +52,70 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         //Code to get Data from DB/other source
-        return _.find(users, { id: args.id });
+        // return _.find(users, { id: args.id });
+        return User.findById(args.id);
+      }
+    }
+    // profile: {
+    //   type: ProfileType,
+    //   args: { id: { type: GraphQLID } },
+    //   resolve(parent, args) {
+    //     // return _.find(profiles, { id: args.id });
+    //     return Profile.find({})
+    //   }
+    // },
+    // users: {
+    //   type: new GraphQLList(UserType),
+    //   resolve(parent, args) {
+    //     // return users;
+    //   }
+    // }
+  }
+});
+
+const Mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: {
+    addUser: {
+      type: UserType,
+      args: {
+        firstName: { type: new GraphQLNonNull (GraphQLString) },
+        lastName: { type: new GraphQLNonNull (GraphQLString) }
+      },
+      resolve(parent, args) {
+        let user = new User({
+          firstName: args.firstName,
+          lastName: args.lastName
+        });
+        return user.save();
       }
     },
-    profile: {
+    addProfile: {
       type: ProfileType,
-      args: { id: { type: GraphQLID } },
+      args: {
+        street: { type: new GraphQLNonNull (GraphQLString) },
+        city: { type: new GraphQLNonNull (GraphQLString) },
+        state: { type: new GraphQLNonNull (GraphQLString) },
+        zip: { type: new GraphQLNonNull (GraphQLString) },
+        rent: { type: new GraphQLNonNull (GraphQLInt) },
+        userID: { type: new GraphQLNonNull (GraphQLString) }
+      },
       resolve(parent, args) {
-        return _.find(profiles, { id: args.id });
-      }
-    },
-    users: {
-      type: new GraphQLList(UserType),
-      resolve(parent, args) {
-        return users;
+        let profile = new Profile({
+          street: args.street,
+          city: args.city,
+          state: args.state,
+          zip: args.zip,
+          rent: args.rent,
+          userID: args.userID
+        });
+        return profile.save();
       }
     }
   }
 });
 
 module.exports = new GraphQLSchema({
-  query: RootQuery
+  query: RootQuery,
+  mutation: Mutation
 });
