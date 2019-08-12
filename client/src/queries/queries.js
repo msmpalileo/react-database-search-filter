@@ -13,6 +13,7 @@ const getUsers = gql`
 const getProfiles = gql`
   query($userID: String) {
     profiles(userID: $userID) {
+      id
       state
       street
       city

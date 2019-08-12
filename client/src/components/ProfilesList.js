@@ -7,11 +7,11 @@ class ProfilesList extends Component {
     const { profiles } = this.props.data;
     if (profiles) {
       return (
-        <div>
+        <div className="profileList-container">
           {profiles.map(item => {
             return (
-              <ul>
-                <li>ID: {item.userID}</li>
+              <ul className="profileList">
+                <li>ID: {item.id}</li>
                 <li>Street: {item.street}</li>
                 <li>City: {item.city}</li>
                 <li>State: {item.state}</li>
@@ -23,7 +23,7 @@ class ProfilesList extends Component {
         </div>
       );
     } else {
-      return <div className="loader"></div>;
+      return <div className="loader" />;
     }
   }
 

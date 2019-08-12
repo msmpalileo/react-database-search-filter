@@ -27,8 +27,7 @@ class AddProfile extends Component {
     }
   };
 
-  submitForm(e) {
-    e.preventDefault();
+  submitForm() {
     this.props.addProfiles({
       variables: {
         street: this.state.street,
@@ -71,7 +70,11 @@ class AddProfile extends Component {
                   {isOpen
                     ? items
                         .filter(
-                          item => !inputValue || item.value.includes(inputValue)
+                          item =>
+                            !inputValue ||
+                            item.value
+                              .toLowerCase()
+                              .includes(inputValue.toLowerCase())
                         )
                         .map((item, index) => (
                           <li

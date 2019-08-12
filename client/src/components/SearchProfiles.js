@@ -5,6 +5,7 @@ import Downshift from "downshift";
 import ProfilesList from "./ProfilesList";
 
 let items = [];
+let tempID = "";
 
 class SearchProfiles extends Component {
   constructor(props) {
@@ -13,6 +14,10 @@ class SearchProfiles extends Component {
       userID: ""
     };
   }
+
+  sendID = () => {
+    this.setState({ userID: tempID });
+  };
 
   addUser = () => {
     let data = this.props.getUsers;
@@ -30,7 +35,7 @@ class SearchProfiles extends Component {
         <h2>Search Profiles</h2>
         <Downshift
           onChange={selection => {
-            this.setState({ userID: selection.id });
+            tempID = selection.id;
           }}
           itemToString={item => (item ? item.value : "")}
         >
@@ -51,7 +56,11 @@ class SearchProfiles extends Component {
                 {isOpen
                   ? items
                       .filter(
-                        item => !inputValue || item.value.includes(inputValue)
+                        item =>
+                          !inputValue ||
+                          item.value
+                            .toLowerCase()
+                            .includes(inputValue.toLowerCase())
                       )
                       .map((item, index) => (
                         <li
@@ -70,6 +79,9 @@ class SearchProfiles extends Component {
             </div>
           )}
         </Downshift>
+        <div className="button">
+          <button onClick={this.sendID}>Search</button>
+        </div>
         <ProfilesList userID={this.state.userID} />
       </div>
     );
