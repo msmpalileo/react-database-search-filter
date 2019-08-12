@@ -55,21 +55,22 @@ const RootQuery = new GraphQLObjectType({
         // return _.find(users, { id: args.id });
         return User.findById(args.id);
       }
+    },
+    profiles: {
+      type: new GraphQLList(ProfileType),
+      args: { userID: { type: GraphQLString } },
+      resolve(parent, args) {
+        // return _.find(profiles, { id: args.id });
+        return Profile.find({ userID: args.userID });
+      }
+    },
+    users: {
+      type: new GraphQLList(UserType),
+      resolve(parent, args) {
+        // return users;
+        return User.find({});
+      }
     }
-    // profile: {
-    //   type: ProfileType,
-    //   args: { id: { type: GraphQLID } },
-    //   resolve(parent, args) {
-    //     // return _.find(profiles, { id: args.id });
-    //     return Profile.find({})
-    //   }
-    // },
-    // users: {
-    //   type: new GraphQLList(UserType),
-    //   resolve(parent, args) {
-    //     // return users;
-    //   }
-    // }
   }
 });
 
@@ -79,8 +80,8 @@ const Mutation = new GraphQLObjectType({
     addUser: {
       type: UserType,
       args: {
-        firstName: { type: new GraphQLNonNull (GraphQLString) },
-        lastName: { type: new GraphQLNonNull (GraphQLString) }
+        firstName: { type: new GraphQLNonNull(GraphQLString) },
+        lastName: { type: new GraphQLNonNull(GraphQLString) }
       },
       resolve(parent, args) {
         let user = new User({
@@ -93,12 +94,12 @@ const Mutation = new GraphQLObjectType({
     addProfile: {
       type: ProfileType,
       args: {
-        street: { type: new GraphQLNonNull (GraphQLString) },
-        city: { type: new GraphQLNonNull (GraphQLString) },
-        state: { type: new GraphQLNonNull (GraphQLString) },
-        zip: { type: new GraphQLNonNull (GraphQLString) },
-        rent: { type: new GraphQLNonNull (GraphQLInt) },
-        userID: { type: new GraphQLNonNull (GraphQLString) }
+        street: { type: new GraphQLNonNull(GraphQLString) },
+        city: { type: new GraphQLNonNull(GraphQLString) },
+        state: { type: new GraphQLNonNull(GraphQLString) },
+        zip: { type: new GraphQLNonNull(GraphQLString) },
+        rent: { type: new GraphQLNonNull(GraphQLInt) },
+        userID: { type: new GraphQLNonNull(GraphQLString) }
       },
       resolve(parent, args) {
         let profile = new Profile({
