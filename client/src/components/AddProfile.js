@@ -27,18 +27,31 @@ class AddProfile extends Component {
     }
   };
 
-  submitForm() {
-    this.props.addProfiles({
-      variables: {
-        street: this.state.street,
-        city: this.state.city,
-        state: this.state.state,
-        zip: this.state.zip,
-        rent: this.state.rent,
-        userID: this.state.userID
-      },
-      refetchQueries: [{ query: getProfiles }]
-    });
+  submitForm(e) {
+    e.preventDefault();
+    if (
+      this.state.street === "" ||
+      this.state.city === "" ||
+      this.state.state === "" ||
+      this.state.zip === "" ||
+      this.state.rent === ""
+    ) {
+      alert("Input(s) cannot be blank.");
+    } else {
+      alert("Profile Added Successfully!");
+      this.props.addProfiles({
+        variables: {
+          street: this.state.street,
+          city: this.state.city,
+          state: this.state.state,
+          zip: this.state.zip,
+          rent: this.state.rent,
+          userID: this.state.userID
+        },
+        refetchQueries: [{ query: getProfiles }]
+      });
+      window.location.reload();
+    }
   }
 
   render() {

@@ -5,7 +5,20 @@ import { getProfiles } from "../queries/queries";
 class ProfilesList extends Component {
   displayProfilesList() {
     const { profiles } = this.props.data;
-    if (profiles) {
+
+    Object.size = function(obj) {
+      var size = 0,
+        key;
+      for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+      }
+      return size;
+    };
+
+    // Get the size of an object
+    var size = Object.size(profiles);
+
+    if (size > 0) {
       return (
         <div className="profileList-container">
           {profiles.map(item => {
@@ -22,13 +35,24 @@ class ProfilesList extends Component {
           })}
         </div>
       );
-    } else {
-      return <div className="loader" />;
+    }
+    // else if (profiles.length() === 0) {
+    //   return (
+    // <div>
+    //   <p>No profiles yet for this user.</p>
+    // </div>
+    //   );
+    // }
+    else {
+      return (
+        <div className="noProfile">
+          <p>No profiles yet for this user.</p>
+        </div>
+      );
     }
   }
 
   render() {
-    console.log(this.props);
     return <div id="profile-list">{this.displayProfilesList()}</div>;
   }
 }

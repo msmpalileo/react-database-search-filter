@@ -13,13 +13,19 @@ class AddUser extends Component {
 
   submitForm(e) {
     e.preventDefault();
-    this.props.addUsers({
-      variables: {
-        firstName: this.state.firstName,
-        lastName: this.state.lastName
-      },
-      refetchQueries: [{ query: getUsers }]
-    });
+    if (this.state.firstName === "" || this.state.lastName === "") {
+      alert("Input(s) cannot be blank.");
+    } else {
+      alert("User Added Successfully!");
+      this.props.addUsers({
+        variables: {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName
+        },
+        refetchQueries: [{ query: getUsers }]
+      });
+      window.location.reload();
+    }
   }
 
   render() {

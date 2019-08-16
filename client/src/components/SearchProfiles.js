@@ -11,12 +11,13 @@ class SearchProfiles extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userID: ""
+      userID: "",
+      display: "displayNone"
     };
   }
 
   sendID = () => {
-    this.setState({ userID: tempID });
+    this.setState({ userID: tempID, display: "" });
   };
 
   addUser = () => {
@@ -82,7 +83,9 @@ class SearchProfiles extends Component {
         <div className="button">
           <button onClick={this.sendID}>Search</button>
         </div>
-        <ProfilesList userID={this.state.userID} />
+        <div className={this.state.display}>
+          <ProfilesList userID={this.state.userID} />
+        </div>
       </div>
     );
   }
